@@ -6,7 +6,7 @@ library(invgamma)
 wi = c(rep(10,45), rep(8,8), rep(6,6), 4, rep(2,8))
 df = data.frame(data = wi)
 write.csv(df, "wokiin.csv")
-plot(density(wi))
+# plot(density(wi))
 
 mean = mean(wi)
 var = var(wi)
@@ -26,7 +26,7 @@ rnormgamma <- function(n, mu, lambda, alpha, beta) {
   data.frame(x = x)
 }
 
-plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+# plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
 
 ### updating for posterior
 
@@ -37,13 +37,16 @@ lambdanew = lambda + length(data)
 alphanew = alpha + length(data)/2
 betanew = beta + 0.5*sum((data - mean(data))^2) + length(data)*lambda/(lambda + length(data))*(mean(data) - mu)^2/2
 
-plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x))
-lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+par(mfrow = c(3,1))
 
+plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x), col = "blue", main = "Wok Iin Distribution", xlab = "Scores",
+     xlim = c(7.8, 8.7), ylim = c(0,17))
+lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x), col = "red")
+abline(v = 8.2, col = "black", lty = 2)
 # sampling 1,000,000 datapoints from NIG rv
 
-sample = rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x
-length(sample[sample>8])/length(sample)
+sample = rnormgamma(100000, munew, lambdanew, alphanew, betanew)$x
+length(sample[sample>8.2])/length(sample)
 # data for etnas
 
 e <- c()
@@ -63,14 +66,14 @@ for (i in 1:25){
   e <- c(e, 2)
 }
 
-plot(density(e))
+# plot(density(e))
 
 mu = mean(e)
-alpha = 100
-beta = 1
+# alpha = 100
+# beta = 1
 lambda = (alpha-1)/(var(e)*beta)
 
-plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+# plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
 
 ### posterior updating
 
@@ -81,13 +84,15 @@ lambdanew = lambda + length(data)
 alphanew = alpha + length(data)/2
 betanew = beta + 0.5*sum((data - mean(data))^2) + length(data)*lambda/(lambda + length(data))*(mean(data) - mu)^2/2
 
-plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x))
-lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x), col = "blue", main = "Etna's Distribution", xlab = "Scores",
+     xlim = c(7.8, 8.7), ylim = c(0,17))
+lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x), col = "red")
+abline(v = 8.2, col = "black", lty = 2)
 
 # sampling 1,000,000 datapoints from NIG rv
 
-sample = rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x
-length(sample[sample>8])/length(sample)
+sample = rnormgamma(100000, munew, lambdanew, alphanew, betanew)$x
+length(sample[sample>8.2])/length(sample)
 
 # Sultan's reviews
 reviews <- c(rep(10,554),rep(8,138),rep(6,67),rep(4,34),rep(2,52))
@@ -96,12 +101,12 @@ sig_2 <- var(reviews)
 length(reviews)
 
 mu = mean(reviews)
-alpha = 100
-beta = 1
+# alpha = 100
+# beta = 1
 lambda = (alpha-1)/(var(reviews)*beta)
-
-plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
-plot(density(reviews))
+# 
+# plot(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+# plot(density(reviews))
 
 
 ### posterior updating
@@ -113,15 +118,17 @@ lambdanew = lambda + length(data)
 alphanew = alpha + length(data)/2
 betanew = beta + 0.5*sum((data - mean(data))^2) + length(data)*lambda/(lambda + length(data))*(mean(data) - mu)^2/2
 
-plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x))
-lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x))
+plot(density(rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x), col = "blue", main = "Sultan's Distribution", xlab = "Scores",
+     xlim = c(7.8, 8.7), ylim = c(0,17))
+lines(density(rnormgamma(10000, mu, lambda, alpha, beta)$x), col = "red")
+abline(v = 8.2, col = "black", lty = 2)
 
 ## probability question
 
 # sampling 1,000,000 datapoints from NIG rv
 
-sample = rnormgamma(10000, munew, lambdanew, alphanew, betanew)$x
-length(sample[sample>8])/length(sample)
+sample = rnormgamma(100000, munew, lambdanew, alphanew, betanew)$x
+length(sample[sample>8.2])/length(sample)
 
 # question b
 
@@ -296,3 +303,26 @@ OTS = function(data, alpha, beta){
 
 res = OTS(df1,1,1)
 hist(res)
+
+df = data.frame(Etnas = e, Wok_Iin = wi, Sultans = reviews)
+
+
+xs= seq(-5,5,0.01)
+sigmoid = function(x){
+  return(10*exp(5*x)/(1+exp(5*x)))
+}
+
+par(mfrow = c(1,1))
+
+sigmoids = sigmoid(xs)
+plot(xs,sigmoids-mean(sigmoids), type="l", xlab = "Loss/Gain",
+     ylab = "Utility", lwd = 2)
+abline(h = 0, col = "red", lty = 2, lwd = 2)
+abline(v = 0, col = "red", lty = 2, lwd = 2)
+
+sigmoids = sigmoid(xs)
+plot(xs,sigmoids-mean(sigmoids), type="l", xlab = "Loss/Gain",
+     ylab = "Perceived Utility", lwd = 2)
+abline(h = sigmoid(0.25)-mean(sigmoids), col = "red", lty = 2, lwd = 2)
+abline(v = 0.25, col = "red", lty = 2, lwd = 2)
+
