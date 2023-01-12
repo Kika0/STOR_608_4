@@ -26,7 +26,6 @@ UCB = function(N,probs){
   # add a column for chosen arms
   obs <<- cbind(arms, chosen)
   obs <<- data.frame(obs)
-  print(obs)
   # ucb for remaining time steps
   for(i in (k+1):t){
     mus = c()
