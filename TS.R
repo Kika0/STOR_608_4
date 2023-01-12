@@ -36,6 +36,6 @@ TS = function(N,probs, alpha, beta){
     hps[arm,2] = hps[arm,2] + 1 - df[i,arm]
     arms = c(arms, arm)
   }
-  return(data.frame("chosen"=arms))
+  return(cbind(df,data.frame("chosen"=arms)))
   # return(hps)
 }
