@@ -35,10 +35,8 @@ UCB = function(N,probs){
       mu = numerator/denominator + sqrt(2*log(i)/denominator)
       mus = cbind(mus, mu)
     }
-    arm = which.max(mus)
-    if (length(arm) != 1){
-      arm = sample(arm, 1)
-    }
+    arm = sample(which(mus == max(mus)),1)
+    
     new = cbind(df[i,], arm)
     colnames(new) = colnames(obs)
     obs <<- rbind(obs, new)
