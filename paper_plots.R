@@ -3,15 +3,11 @@ library(tidyverse)
 source("UCB.R")
 # TS algorithm
 source("TS.R")
+# optimistic TS algorithm
+source("Opt_TS.R")
+# KL-UCB algorithm
 source("KL_UCB.R")
-
-# TS
-ts <- TS(N=1000,probs=c(0.5,0.55),alpha=1,beta=1) %>% mutate("chosen"=as.character(chosen))
-ggplot(ts,aes(x=chosen)) +
-  geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
-  xlab("") +
-  ylab("Count") +
-  theme_minimal()
+# source("giro1.R")
 
 # UCB
 ucb <- UCB(1000,probs=c(0.5,0.55)) %>% mutate("chosen"=as.character(chosen))
@@ -23,15 +19,33 @@ ggplot(ucb,aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat=
 # KL-UCB
 # UCB
 kl_ucb <- KL_UCB(1000,probs=c(0.5,0.55)) %>% mutate("chosen"=as.character(chosen))
-ggplot(ucb,aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
+ggplot(kl_ucb,aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
   xlab("") +
   ylab("Count") +
   theme_minimal()
 
-ts <- ts %>% rename("Thompson sampling"=chosen)
+# TS
+ts <- TS(N=1000,probs=c(0.5,0.55),alpha=1,beta=1) %>% mutate("chosen"=as.character(chosen))
+ggplot(ts,aes(x=chosen)) +
+  geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
+  xlab("") +
+  ylab("Count") +
+  theme_minimal()
+
+# Optimistic TS
+opt_ts <- Opt_TS(N=1000,probs=c(0.5,0.55),alpha=1,beta=1) %>% mutate("chosen"=as.character(chosen))
+ggplot(opt_ts,aes(x=chosen)) +
+  geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
+  xlab("") +
+  ylab("Count") +
+  theme_minimal()
+
+# bring together to one plot
 ucb <- ucb %>% rename("UCB"=chosen) 
-kl_ucb <- ucb %>% rename("KL-UCB"=chosen)
-all <- cbind(ts,ucb,kl_ucb) %>% pivot_longer(c(UCB,"Thompson sampling"),names_to = "algorithm",values_to = "chosen") %>% select(-c(arm,arm.1))
+kl_ucb <- kl_ucb %>% rename("KL-UCB"=chosen)
+ts <- ts %>% rename("Thompson sampling"=chosen)
+opt_ts <- opt_ts %>% rename("Optimistic Thompson sampling"=chosen)
+all <- cbind(ucb,kl_ucb,ts,opt_ts) %>% pivot_longer(c(UCB,"KL-UCB","Thompson sampling","Optimistic Thompson sampling"),names_to = "algorithm",values_to = "chosen") %>% select(-c(arm,arm.1))
 
 ggplot(all,aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
   xlab("") +
