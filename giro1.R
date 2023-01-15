@@ -1,6 +1,6 @@
-# algorithm inspired by giro
+# Algorithm 1 from Giro paper
 
-giro1 = function(N,probs){
+Giro = function(N,probs){
   # if (arms!=length(probs)) {print("Probabilities vector must have same length as the number of arms.")}
   arms <- length(probs)
   set.seed(1)
