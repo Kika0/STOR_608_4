@@ -35,7 +35,7 @@ UCB = function(N,probs){
       mu = numerator/denominator + sqrt(2*log(i)/denominator)
       mus = cbind(mus, mu)
     }
-    arm = sample(which(mus == max(mus)),1)
+    arm = as.numeric(sample(as.character(which(mus == max(mus))),1))
     
     new = cbind(df[i,], arm)
     colnames(new) = colnames(obs)
