@@ -8,6 +8,8 @@ source("Opt_TS.R")
 # KL-UCB algorithm
 source("KL_UCB.R")
 # source("giro1.R")
+# Giro algorithm
+source("Giro.R")
 
 # UCB
 ucb <- UCB(1000,probs=c(0.5,0.55)) %>% mutate("chosen"=as.character(chosen))
@@ -40,14 +42,22 @@ ggplot(opt_ts,aes(x=chosen)) +
   ylab("Count") +
   theme_minimal()
 
+# Giro
+giro <- Giro(N=1000,probs=c(0.5,0.55)) %>% mutate("chosen"=as.character(chosen))
+ggplot(giro,aes(x=chosen)) +
+  geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
+  xlab("") +
+  ylab("Count") +
+  theme_minimal()
+
 # bring together to one plot
 ucb <- ucb %>% rename("UCB"=chosen) 
 kl_ucb <- kl_ucb %>% rename("KL-UCB"=chosen)
 ts <- ts %>% rename("Thompson sampling"=chosen)
 opt_ts <- opt_ts %>% rename("Optimistic Thompson sampling"=chosen)
-all <- cbind(ucb,kl_ucb,ts,opt_ts) %>% pivot_longer(c(UCB,"KL-UCB","Thompson sampling","Optimistic Thompson sampling"),names_to = "algorithm",values_to = "chosen") %>% select(-c(arm,arm.1))
-
-ggplot(all,aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
+giro <- giro %>% rename("Giro"=chosen)
+all <- cbind(ucb,kl_ucb,ts,opt_ts,giro) %>% pivot_longer(c(UCB,"KL-UCB","Thompson sampling","Optimistic Thompson sampling","Giro"),names_to = "algorithm",values_to = "chosen") %>% select(-c(arm,arm.1)) 
+ggplot(all %>% mutate(algorithm=factor(algorithm,level=c("UCB","KL-UCB","Thompson sampling","Optimistic Thompson sampling","Giro"))),aes(x=chosen)) + geom_histogram(binwidth = 0.5,fill="firebrick",stat="count") +
   xlab("") +
   ylab("Count") +
   theme_minimal() +
