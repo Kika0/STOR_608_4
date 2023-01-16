@@ -1,9 +1,9 @@
 # optimistic Thompson sampling
 
-Opt_TS = function(N,probs, alpha, beta){
+Opt_TS = function(N,probs, alpha, beta, seed){
   
   arms <- length(probs)
-  set.seed(1)
+  set.seed(seed)
   # create empty dataframe
   df <- as.data.frame(matrix(ncol=arms, nrow=N))
   for (i in 1:arms) {

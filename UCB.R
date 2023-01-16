@@ -1,9 +1,9 @@
 # creating the UCB Algorithm for Bernoulli
 
-UCB = function(N,probs){
+UCB = function(N,probs,seed){
   # if (arms!=length(probs)) {print("Probabilities vector must have same length as the number of arms.")}
  arms <- length(probs)
-  set.seed(1)
+  set.seed(seed)
   # create empty dataframe
   df <- as.data.frame(matrix(ncol=arms, nrow=N))
   for (i in 1:arms) {

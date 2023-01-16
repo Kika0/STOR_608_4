@@ -17,10 +17,10 @@ KL <- function(p,q) {
 #   kl[i] <- KL(0.7,q[i])
 # }
 
-KL_UCB = function(N,probs){
+KL_UCB = function(N,probs,seed){
   # if (arms!=length(probs)) {print("Probabilities vector must have same length as the number of arms.")}
   arms <- length(probs)
-  set.seed(1)
+  set.seed(seed)
   # create empty dataframe
   df <- as.data.frame(matrix(ncol=arms, nrow=N))
   for (i in 1:arms) {
